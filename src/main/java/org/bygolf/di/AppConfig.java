@@ -36,7 +36,7 @@ public class AppConfig {
 
     @Bean
     public GameService gameService() {
-        return new GameServiceImpl(botAi());
+        return new GameServiceImpl(botAi(), ticTacToeRepository(), dsToDomainMapper());
     }
 
     @Bean

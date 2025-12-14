@@ -6,7 +6,7 @@ import org.bygolf.domain.model.GameField;
 public interface GameService {
 
     int[][] nextTurn(CurrentGame currentGame);
-    boolean isCorrectField(GameField gameField);
+    boolean isCorrectGame(CurrentGame currentGame);
     boolean isGameEnds(GameField gameField);
 
 }

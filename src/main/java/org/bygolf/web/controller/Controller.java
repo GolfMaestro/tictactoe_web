@@ -64,9 +64,15 @@ public class Controller {
         DSCurrentGame tempGame = ticTacToeRepository.loadGame(gameId);
 
         if (tempGame != null) {
-            currentGame.setGameField(new GameField(gameService.nextTurn(currentGame)));
-            ticTacToeRepository.saveGame(domainToDS.currentGameToDS(currentGame));
-            return ResponseEntity.ok().body(currentGame);
+            if (gameService.isCorrectGame(currentGame)) {
+                currentGame.setGameField(new GameField(gameService.nextTurn(currentGame)));
+                ticTacToeRepository.saveGame(domainToDS.currentGameToDS(currentGame));
+                return ResponseEntity.ok().body(currentGame);
+            }
+            else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Incorrect move");
+            }
+
         }
         else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Game not found");

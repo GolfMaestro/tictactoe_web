@@ -23,43 +23,52 @@ public class GameServiceImpl implements GameService {
     @Override
     public int[][] nextTurn(CurrentGame currentGame) {
 
-        int[][] field = currentGame.getGameField().getField();
+        if (!checkIsNull(currentGame)) {
 
-        int[] next = botAi.selectBestMove(field);
+            int[][] field = currentGame.getGameField().getField();
+            int[] next = botAi.selectBestMove(field);
+            field[next[0]][next[1]] = 2;
+            return field;
 
-        field[next[0]][next[1]] = 2;
-
-        return field;
-
+        }
+        else {
+            throw new IllegalArgumentException("Expecting not null");
+        }
+        
     }
 
     @Override
     public boolean isCorrectGame(CurrentGame currentGame) {
 
-        UUID tempId = currentGame.getId();
+        if (!checkIsNull(currentGame)) {
+            UUID tempId = currentGame.getId();
 
-        CurrentGame tempGame = dsToDomain.dsToCurrentGame(ticTacToeRepository.loadGame(tempId));
+            CurrentGame tempGame = dsToDomain.dsToCurrentGame(ticTacToeRepository.loadGame(tempId));
 
-        int difAmount = 0;
+            int difAmount = 0;
 
-        int sizeN = tempGame.getGameField().getField().length;
+            int sizeN = tempGame.getGameField().getField().length;
 
-        int[][] sourceField = tempGame.getGameField().getField();
-        int[][] newField = currentGame.getGameField().getField();
+            int[][] sourceField = tempGame.getGameField().getField();
+            int[][] newField = currentGame.getGameField().getField();
 
-        for (int i = 0; i < sizeN; i++) {
-            for (int j = 0; j < sizeN; j++) {
-                if (sourceField[i][j] != newField[i][j]) {
-                    difAmount++;
+            for (int i = 0; i < sizeN; i++) {
+                for (int j = 0; j < sizeN; j++) {
+                    if (sourceField[i][j] != newField[i][j]) {
+                        difAmount++;
+                    }
                 }
             }
-        }
 
-        if (difAmount > 1) {
-            return false;
+            if (difAmount > 1) {
+                return false;
+            }
+            else {
+                return true;
+            }
         }
         else {
-            return true;
+            throw new IllegalArgumentException("Expecting not null");
         }
 
     }
@@ -67,8 +76,26 @@ public class GameServiceImpl implements GameService {
     @Override
     public Integer isGameEnds(GameField gameField) {
 
-        return botAi.whoWin(gameField.getField());
+        if (gameField != null) {
+            return botAi.whoWin(gameField.getField());
+        }
+        else {
+            throw new IllegalArgumentException("Expecting not null");
+        }
 
+    }
+
+    public boolean checkIsNull(CurrentGame currentGame) {
+        if (currentGame == null) {
+            return true;
+        }
+        if (currentGame.getGameField() == null) {
+            return true;
+        }
+        if (currentGame.getId() == null) {
+            return true;
+        }
+        return false;
     }
 
 

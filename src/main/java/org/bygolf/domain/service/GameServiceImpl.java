@@ -34,7 +34,7 @@ public class GameServiceImpl implements GameService {
         else {
             throw new IllegalArgumentException("Expecting not null");
         }
-        
+
     }
 
     @Override
@@ -56,6 +56,13 @@ public class GameServiceImpl implements GameService {
                 for (int j = 0; j < sizeN; j++) {
                     if (sourceField[i][j] != newField[i][j]) {
                         difAmount++;
+                    }
+                    if (newField[i][j] == 0 || newField[i][j] == 1 || newField[i][j] == 2) {
+                        ;
+                    }
+                    else {
+                        difAmount = 9;
+                        break;
                     }
                 }
             }

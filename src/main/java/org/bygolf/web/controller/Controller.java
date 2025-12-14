@@ -36,6 +36,7 @@ public class Controller {
     @GetMapping("game")
     public CurrentGame createNewGame() {
         CurrentGame tempGame = new CurrentGame();
+        tempGame.setGameField(new GameField(gameService.nextTurn(tempGame)));
         ticTacToeRepository.saveGame(domainToDS.currentGameToDS(tempGame));
         return tempGame;
     }

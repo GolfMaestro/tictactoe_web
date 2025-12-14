@@ -1,5 +1,6 @@
-package org.bygolf;
+package org.bygolf.web.controller;
 
+import org.bygolf.domain.model.CurrentGame;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -11,6 +12,9 @@ public class Controller {
         return "Tic tac toe app";
     }
 
-
+    @GetMapping("game")
+    public CurrentGame createNewGame() {
+        return new CurrentGame();
+    }
 
 }

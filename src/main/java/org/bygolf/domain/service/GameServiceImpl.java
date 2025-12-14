@@ -32,7 +32,12 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public boolean isGameEnds(GameField gameField) {
-        return false;
+        if (botAi.whoWin(gameField.getField()) == null) {
+            return false;
+        }
+        else {
+            return true;
+        }
     }
 
 

@@ -5,6 +5,11 @@ public class BotAiImpl implements BotAi {
     public BotAiImpl() {
     }
 
+    // 0 - tie
+    // 1 - player
+    // 2 - AI
+    // null - if not end
+
     @Override
     public Integer whoWin(int[][] field) {
 

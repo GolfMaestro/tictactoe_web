@@ -59,13 +59,19 @@ public class Controller {
     }
 
     @PostMapping("game/{gameId}")
-    public CurrentGame turn(@PathVariable UUID gameId, @RequestBody CurrentGame currentGame) {
+    public ResponseEntity<?> turn(@PathVariable UUID gameId, @RequestBody CurrentGame currentGame) {
 
-        currentGame.setGameField(new GameField(gameService.nextTurn(currentGame)));
+        DSCurrentGame tempGame = ticTacToeRepository.loadGame(gameId);
 
-        ticTacToeRepository.saveGame(domainToDS.currentGameToDS(currentGame));
+        if (tempGame != null) {
+            currentGame.setGameField(new GameField(gameService.nextTurn(currentGame)));
+            ticTacToeRepository.saveGame(domainToDS.currentGameToDS(currentGame));
+            return ResponseEntity.ok().body(currentGame);
+        }
+        else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Game not found");
+        }
 
-        return currentGame;
     }
 
 }

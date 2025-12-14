@@ -3,27 +3,24 @@ package org.bygolf.datasource.repository;
 import org.bygolf.datasource.model.DSCurrentGame;
 
 import java.util.UUID;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 public class TicTacToeRepositoryImpl implements TicTacToeRepository {
 
-    private CopyOnWriteArrayList<DSCurrentGame> games = new CopyOnWriteArrayList<>();
+    private final Storage storage;
+
+    public TicTacToeRepositoryImpl(Storage storage) {
+        this.storage = storage;
+    }
 
     @Override
     public void saveGame(DSCurrentGame dsCurrentGame) {
-        games.add(dsCurrentGame);
+        storage.saveGame(dsCurrentGame);
     }
 
     @Override
     public DSCurrentGame loadGame(UUID id) {
 
-        for (DSCurrentGame game : games) {
-            if (game.getId().equals(id)) {
-                return game;
-            }
-        }
-
-        return null;
-
+        return storage.loadGame(id);
+        
     }
 }

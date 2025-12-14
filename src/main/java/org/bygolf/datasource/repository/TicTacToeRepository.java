@@ -7,6 +7,6 @@ import java.util.UUID;
 public interface TicTacToeRepository {
 
     void saveGame(DSCurrentGame dsCurrentGame);
-    DSCurrentGame loadGame(UUID id);
+    public DSCurrentGame loadGame(UUID id);
 
 }

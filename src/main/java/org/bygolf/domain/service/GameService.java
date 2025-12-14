@@ -7,6 +7,6 @@ public interface GameService {
 
     int[][] nextTurn(CurrentGame currentGame);
     boolean isCorrectGame(CurrentGame currentGame);
-    boolean isGameEnds(GameField gameField);
+    Integer isGameEnds(GameField gameField);
 
 }

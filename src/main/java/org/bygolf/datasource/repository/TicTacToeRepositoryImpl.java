@@ -14,7 +14,12 @@ public class TicTacToeRepositoryImpl implements TicTacToeRepository {
 
     @Override
     public void saveGame(DSCurrentGame dsCurrentGame) {
-        storage.saveGame(dsCurrentGame);
+        if (!storage.contain(dsCurrentGame.getId())) {
+            storage.saveGame(dsCurrentGame);
+        }
+        else {
+            storage.updateById(dsCurrentGame.getId(), dsCurrentGame.getDsGameField().getField());
+        }
     }
 
     @Override

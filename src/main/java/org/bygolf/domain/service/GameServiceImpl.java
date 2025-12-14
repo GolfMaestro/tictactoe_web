@@ -65,15 +65,25 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public boolean isGameEnds(GameField gameField) {
-        if (botAi.whoWin(gameField.getField()) == null) {
-            return false;
-        }
-        else {
-            return true;
-        }
-    }
+    public Integer isGameEnds(GameField gameField) {
 
+        Integer winner = botAi.whoWin(gameField.getField());
+
+        if (winner == null) {
+            return null;
+        }
+        else if (winner == 0) {
+            return 0;
+        }
+        else if (winner == 1) {
+            return 1;
+        }
+        else if (winner == 2) {
+            return 2;
+        }
+
+        return null;
+    }
 
 
 }

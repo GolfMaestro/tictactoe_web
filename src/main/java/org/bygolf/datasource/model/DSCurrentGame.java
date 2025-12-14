@@ -21,4 +21,8 @@ public class DSCurrentGame {
     public DSGameField getDsGameField() {
         return dsGameField;
     }
+
+    public void setDsGameField(DSGameField dsGameField) {
+        this.dsGameField = dsGameField;
+    }
 }

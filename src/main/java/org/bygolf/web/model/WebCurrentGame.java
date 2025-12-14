@@ -7,19 +7,18 @@ import java.util.UUID;
 public class WebCurrentGame {
 
     private UUID id;
-    private GameField gameField;
+    private WebGameField webGameField;
 
-    public WebCurrentGame(UUID id, GameField gameField) {
+    public WebCurrentGame(UUID id, WebGameField webGameField) {
         this.id = id;
-        this.gameField = gameField;
+        this.webGameField = webGameField;
     }
 
     public UUID getId() {
         return id;
     }
 
-    public GameField getGameField() {
-        return gameField;
+    public WebGameField getWebGameField() {
+        return webGameField;
     }
-
 }

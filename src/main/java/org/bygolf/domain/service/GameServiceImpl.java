@@ -54,8 +54,12 @@ public class GameServiceImpl implements GameService {
 
             for (int i = 0; i < sizeN; i++) {
                 for (int j = 0; j < sizeN; j++) {
-                    if (sourceField[i][j] != newField[i][j]) {
+                    if (sourceField[i][j] != newField[i][j] && sourceField[i][j] == 0) {
                         difAmount++;
+                    }
+                    else if (sourceField[i][j] != newField[i][j]) {
+                        difAmount = 9;
+                        break;
                     }
                     if (newField[i][j] == 0 || newField[i][j] == 1 || newField[i][j] == 2) {
                         ;

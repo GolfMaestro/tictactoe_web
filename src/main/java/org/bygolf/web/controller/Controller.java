@@ -64,17 +64,17 @@ public class Controller {
         DSCurrentGame tempGame = ticTacToeRepository.loadGame(gameId);
 
         if (tempGame != null) {
-//            Integer winner = gameService.isGameEnds(dsToDomain.dsToGameField(tempGame.getDsGameField()));
-//            if (winner != null) {
-//                switch (winner) {
-//                    case 0:
-//                        return ResponseEntity.ok().body("Tie");
-//                    case 1:
-//                        return ResponseEntity.ok().body("Player win");
-//                    case 2:
-//                        return ResponseEntity.ok().body("AI win");
-//                }
-//            }
+            Integer winner = gameService.isGameEnds(dsToDomain.dsToGameField(tempGame.getDsGameField()));
+            if (winner != null) {
+                switch (winner) {
+                    case 0:
+                        return ResponseEntity.ok().body("Tie");
+                    case 1:
+                        return ResponseEntity.ok().body("Player win");
+                    case 2:
+                        return ResponseEntity.ok().body("AI win");
+                }
+            }
 
             if (gameService.isCorrectGame(currentGame)) {
                 currentGame.setGameField(new GameField(gameService.nextTurn(currentGame)));

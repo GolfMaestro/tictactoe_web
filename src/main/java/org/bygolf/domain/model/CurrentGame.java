@@ -24,4 +24,8 @@ public class CurrentGame {
     public GameField getGameField() {
         return gameField;
     }
+
+    public void setGameField(GameField gameField) {
+        this.gameField = gameField;
+    }
 }

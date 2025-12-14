@@ -5,8 +5,12 @@ import org.bygolf.datasource.mapper.DSToDomainImpl;
 import org.bygolf.datasource.mapper.DomainToDS;
 import org.bygolf.datasource.mapper.DomainToDSImpl;
 import org.bygolf.datasource.repository.Storage;
+import org.bygolf.datasource.repository.TicTacToeRepository;
+import org.bygolf.datasource.repository.TicTacToeRepositoryImpl;
 import org.bygolf.domain.ai.BotAi;
 import org.bygolf.domain.ai.BotAiImpl;
+import org.bygolf.domain.service.GameService;
+import org.bygolf.domain.service.GameServiceImpl;
 import org.bygolf.web.mapper.DomainToWeb;
 import org.bygolf.web.mapper.DomainToWebImpl;
 import org.bygolf.web.mapper.WebToDomain;
@@ -28,6 +32,16 @@ public class AppConfig {
     @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
     public Storage storage() {
         return new Storage();
+    }
+
+    @Bean
+    public GameService gameService() {
+        return new GameServiceImpl(botAi());
+    }
+
+    @Bean
+    public TicTacToeRepository ticTacToeRepository() {
+        return new TicTacToeRepositoryImpl(storage());
     }
 
     @Bean

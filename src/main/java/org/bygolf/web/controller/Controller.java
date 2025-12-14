@@ -2,10 +2,13 @@ package org.bygolf.web.controller;
 
 import org.bygolf.datasource.mapper.DSToDomain;
 import org.bygolf.datasource.mapper.DomainToDS;
+import org.bygolf.datasource.model.DSCurrentGame;
 import org.bygolf.datasource.repository.TicTacToeRepository;
 import org.bygolf.domain.model.CurrentGame;
 import org.bygolf.domain.model.GameField;
 import org.bygolf.domain.service.GameService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -42,8 +45,17 @@ public class Controller {
     }
 
     @GetMapping("game/{gameId}")
-    public CurrentGame getGame(@PathVariable UUID gameId) {
-        return dsToDomain.dsToCurrentGame(ticTacToeRepository.loadGame(gameId));
+    public ResponseEntity<?> getGame(@PathVariable UUID gameId) {
+
+        DSCurrentGame tempGame = ticTacToeRepository.loadGame(gameId);
+
+        if (tempGame != null) {
+            return ResponseEntity.ok().body(dsToDomain.dsToCurrentGame(tempGame));
+        }
+        else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Game not found");
+        }
+
     }
 
     @PostMapping("game/{gameId}")

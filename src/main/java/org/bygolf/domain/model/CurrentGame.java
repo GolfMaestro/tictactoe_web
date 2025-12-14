@@ -6,18 +6,18 @@ import java.util.UUID;
 public class CurrentGame {
 
     private UUID id;
-    private GameField field;
+    private GameField gameField;
 
-    public CurrentGame(UUID id, GameField field) {
+    public CurrentGame(UUID id, GameField gameField) {
         this.id = id;
-        this.field = field;
+        this.gameField = gameField;
     }
 
     public UUID getId() {
         return id;
     }
 
-    public GameField getField() {
-        return field;
+    public GameField getGameField() {
+        return gameField;
     }
 }

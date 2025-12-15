@@ -71,7 +71,7 @@ public class GameServiceImpl implements GameService {
                 }
             }
 
-            if (difAmount > 1) {
+            if (difAmount > 1 || difAmount == 0) {
                 return false;
             }
             else {

@@ -1,34 +1,24 @@
 package org.bygolf.web.controller;
 
-import org.bygolf.datasource.mapper.DSToDomain;
-import org.bygolf.datasource.mapper.DomainToDS;
-import org.bygolf.datasource.model.DSCurrentGame;
-import org.bygolf.datasource.repository.TicTacToeRepository;
-import org.bygolf.domain.model.CurrentGame;
-import org.bygolf.domain.model.GameField;
+import org.bygolf.domain.model.GameType;
 import org.bygolf.domain.service.GameService;
-import org.springframework.http.HttpStatus;
+import org.bygolf.web.dto.CurrentGamesDto;
+import org.bygolf.web.dto.GetGameDto;
+import org.bygolf.web.model.WebCurrentGame;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
 public class Controller {
 
     private final GameService gameService;
-    private final TicTacToeRepository ticTacToeRepository;
-    private final DomainToDS domainToDS;
-    private final DSToDomain dsToDomain;
 
-    public Controller(GameService gameService,
-                      TicTacToeRepository ticTacToeRepository,
-                      DomainToDS domainToDS,
-                      DSToDomain dsToDomain) {
+    public Controller(GameService gameService) {
         this.gameService = gameService;
-        this.ticTacToeRepository = ticTacToeRepository;
-        this.domainToDS = domainToDS;
-        this.dsToDomain = dsToDomain;
     }
 
     @GetMapping("/main")
@@ -36,59 +26,66 @@ public class Controller {
         return "Tic tac toe app";
     }
 
-    @GetMapping("game")
-    public CurrentGame createNewGame() {
-        CurrentGame tempGame = new CurrentGame();
-        tempGame.setGameField(new GameField(gameService.nextTurn(tempGame)));
-        ticTacToeRepository.saveGame(domainToDS.currentGameToDS(tempGame));
-        return tempGame;
+    @GetMapping("game/ai")
+    public ResponseEntity<?> createNewAIGame(Principal principal) {
+
+        WebCurrentGame webCurrentGame = gameService.createNewGame(principal, GameType.AI);
+
+        return ResponseEntity.ok().body(webCurrentGame);
+
+    }
+
+    @GetMapping("game/player")
+    public ResponseEntity<?> createNewPlayerGame(Principal principal) {
+
+        WebCurrentGame webCurrentGame = gameService.createNewGame(principal, GameType.PLAYER);
+
+        return ResponseEntity.ok().body(webCurrentGame);
+
     }
 
     @GetMapping("game/{gameId}")
-    public ResponseEntity<?> getGame(@PathVariable UUID gameId) {
+    public ResponseEntity<?> getGame(@PathVariable UUID gameId, Principal principal) {
 
-        DSCurrentGame tempGame = ticTacToeRepository.loadGame(gameId);
+        GetGameDto getGameDto = gameService.getGameDtoById(principal, gameId);
 
-        if (tempGame != null) {
-            return ResponseEntity.ok().body(dsToDomain.dsToCurrentGame(tempGame));
-        }
-        else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Game not found");
-        }
+        return ResponseEntity.ok(getGameDto);
 
     }
 
     @PostMapping("game/{gameId}")
-    public ResponseEntity<?> turn(@PathVariable UUID gameId, @RequestBody CurrentGame currentGame) {
+    public ResponseEntity<?> turn(@PathVariable UUID gameId, @RequestBody WebCurrentGame webCurrentGameInput, Principal principal) {
 
-        DSCurrentGame tempGame = ticTacToeRepository.loadGame(gameId);
+        WebCurrentGame webCurrentGame = gameService.turn(gameId, webCurrentGameInput, principal);
 
-        if (tempGame != null) {
-            Integer winner = gameService.isGameEnds(dsToDomain.dsToGameField(tempGame.getDsGameField()));
-            if (winner != null) {
-                switch (winner) {
-                    case 0:
-                        return ResponseEntity.ok().body("Tie");
-                    case 1:
-                        return ResponseEntity.ok().body("Player win");
-                    case 2:
-                        return ResponseEntity.ok().body("AI win");
-                }
-            }
+        return ResponseEntity.ok().body(webCurrentGame);
 
-            if (gameService.isCorrectGame(currentGame)) {
-                currentGame.setGameField(new GameField(gameService.nextTurn(currentGame)));
-                ticTacToeRepository.saveGame(domainToDS.currentGameToDS(currentGame));
-                return ResponseEntity.ok().body(currentGame);
-            }
-            else {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Incorrect move");
-            }
+    }
 
-        }
-        else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Game not found");
-        }
+    @GetMapping("games")
+    public ResponseEntity<?> getAllOpenGames() {
+
+        List<CurrentGamesDto> games = gameService.getOpenGames();
+
+        return ResponseEntity.ok(games);
+
+    }
+
+    @PostMapping("join/{gameId}")
+    public ResponseEntity<?> joinOpenGame(@PathVariable UUID gameId, Principal principal) {
+
+        WebCurrentGame webCurrentGame = gameService.joinGame(principal, gameId);
+
+        return ResponseEntity.ok().body(webCurrentGame);
+
+    }
+
+    @GetMapping("user/{userId}")
+    public ResponseEntity<?> getUserInfo(@PathVariable UUID userId) {
+
+        int gamesCount = gameService.getUserInfo(userId);
+
+        return ResponseEntity.ok().body("userId: " + userId + "\nGames count: " + gamesCount);
 
     }
 

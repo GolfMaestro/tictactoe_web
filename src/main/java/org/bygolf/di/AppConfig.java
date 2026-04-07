@@ -4,21 +4,20 @@ import org.bygolf.datasource.mapper.DSToDomain;
 import org.bygolf.datasource.mapper.DSToDomainImpl;
 import org.bygolf.datasource.mapper.DomainToDS;
 import org.bygolf.datasource.mapper.DomainToDSImpl;
-import org.bygolf.datasource.repository.Storage;
 import org.bygolf.datasource.repository.TicTacToeRepository;
-import org.bygolf.datasource.repository.TicTacToeRepositoryImpl;
+import org.bygolf.datasource.repository.UserRepository;
+import org.bygolf.domain.service.*;
+import org.bygolf.security.filter.AuthFilter;
 import org.bygolf.domain.ai.BotAi;
 import org.bygolf.domain.ai.BotAiImpl;
-import org.bygolf.domain.service.GameService;
-import org.bygolf.domain.service.GameServiceImpl;
 import org.bygolf.web.mapper.DomainToWeb;
 import org.bygolf.web.mapper.DomainToWebImpl;
 import org.bygolf.web.mapper.WebToDomain;
 import org.bygolf.web.mapper.WebToDomainImpl;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 public class AppConfig {
@@ -29,19 +28,29 @@ public class AppConfig {
     }
 
     @Bean
-    @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
-    public Storage storage() {
-        return new Storage();
+    public GameService gameService(
+            BotAi botAi,
+            TicTacToeRepository repository,
+            DSToDomain dsToDomain,
+            DomainToDS domainToDS,
+            DomainToWeb domainToWeb,
+            UserService userService) {
+        return new GameServiceImpl(botAi, repository, dsToDomain, domainToDS, domainToWeb, userService);
     }
 
     @Bean
-    public GameService gameService() {
-        return new GameServiceImpl(botAi(), ticTacToeRepository(), dsToDomainMapper());
+    public UserServiceImpl userService(
+            UserRepository userRepository,
+            DSToDomain dsToDomain,
+            PasswordEncoder passwordEncoder) {
+        return new UserServiceImpl(userRepository, dsToDomain, passwordEncoder);
     }
 
     @Bean
-    public TicTacToeRepository ticTacToeRepository() {
-        return new TicTacToeRepositoryImpl(storage());
+    public AuthFilter authFilter(
+            UserServiceImpl userServiceImpl
+    ) {
+        return new AuthFilter(userServiceImpl);
     }
 
     @Bean
@@ -62,6 +71,11 @@ public class AppConfig {
     @Bean
     public DomainToWeb domainToWebMapper() {
         return new DomainToWebImpl();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
 }

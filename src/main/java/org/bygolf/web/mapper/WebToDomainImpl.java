@@ -10,7 +10,7 @@ public class WebToDomainImpl implements WebToDomain {
     @Override
     public CurrentGame webToCurrentGame(WebCurrentGame webCurrentGame) {
         return new CurrentGame(webCurrentGame.getId(),
-                                new GameField(webCurrentGame.getWebGameField().getField()));
+                                new GameField(webCurrentGame.getGameField()));
     }
 
     @Override

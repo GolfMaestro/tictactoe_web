@@ -22,6 +22,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    implementation("org.postgresql:postgresql:42.7.9")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa:3.5.8")
+    implementation("org.springframework.boot:spring-boot-starter-security:3.5.8")
 }
 
 tasks.withType<Test> {
